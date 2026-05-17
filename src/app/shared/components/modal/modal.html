@@ -1,0 +1,22 @@
+@if (isOpen) {
+  <div class="modal modal-open modal-bottom sm:modal-middle transition-all duration-300">
+    <div class="modal-box bg-base-100 border border-base-300 shadow-2xl">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="font-bold text-xl">{{ title }}</h3>
+        <button (click)="onClose.emit()" class="btn btn-sm btn-circle btn-ghost">✕</button>
+      </div>
+
+      <div class="py-4">
+        <ng-content></ng-content>
+      </div>
+
+      <div class="modal-action gap-2">
+        <app-button label="Cancelar" variant="ghost" (onClick)="onClose.emit()"></app-button>
+        @if (showSave) {
+          <app-button [label]="saveLabel" (onClick)="onSave.emit()"></app-button>
+        }
+      </div>
+    </div>
+    <div class="modal-backdrop bg-black/40" (click)="onClose.emit()"></div>
+  </div>
+}
