@@ -1,4 +1,5 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { AccountService } from './core/services/account.service';
 
 @Component({
   selector: 'app-root',
@@ -8,4 +9,8 @@ import { Component, signal } from '@angular/core';
 })
 export class App {
   protected readonly title = signal('Comitructor.Frontend');
+
+  private authService = inject(AccountService);
+
+  isLoggedIn$ = this.authService.authStatus$;
 }

@@ -1,0 +1,14 @@
+:host {
+  display: block;
+  height: 100vh;
+}
+
+/* Personalización opcional del scrollbar para que se vea más moderno */
+main::-webkit-scrollbar {
+  width: 6px;
+}
+
+main::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--bc) / 0.2);
+  border-radius: 10px;
+}

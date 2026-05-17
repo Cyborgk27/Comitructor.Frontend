@@ -1,0 +1,59 @@
+@if (isLoggedIn$ | async) {
+  <div class="flex flex-col h-full p-3 bg-base-200 text-base-content border-r border-base-300 w-64">
+    <div class="flex items-center justify-center gap-2 px-4 py-6">
+      <div class="bg-primary text-primary-content p-2 rounded-lg shadow-lg">
+        <i class="pi pi-building text-xl"></i>
+      </div>
+      <span class="text-xl font-bold tracking-tight">Comitructor</span>
+    </div>
+
+    <div class="divider px-4 my-0"></div>
+
+    <ul class="menu menu-md w-full flex-grow space-y-1">
+      <li
+        class="menu-title flex items-center gap-2 mt-4 text-xs uppercase tracking-widest opacity-60"
+      >
+        Navegación
+      </li>
+
+      <li *ngFor="let item of filteredMenu">
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="flex items-center gap-3 transition-all duration-200 rounded-lg hover:bg-primary/10"
+        >
+          <i [class]="item.icon + ' text-lg'"></i>
+          <span class="font-medium">{{ item.label }}</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="mt-auto pt-4 border-t border-base-300">
+      <div class="dropdown dropdown-top w-full">
+        <label tabindex="0" class="btn btn-ghost w-full flex justify-start gap-3 px-2 no-animation">
+          <div class="avatar placeholder">
+            <div class="bg-neutral text-neutral-content rounded-full w-10">
+              <i class="pi pi-user text-lg"></i>
+            </div>
+          </div>
+          <div class="flex flex-col items-start overflow-hidden">
+            <span class="text-sm font-bold truncate">Mi Cuenta</span>
+            <span class="text-xs opacity-50 truncate">Opciones de perfil</span>
+          </div>
+        </label>
+
+        <ul
+          tabindex="0"
+          class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-56 mb-2 border border-base-200"
+        >
+          <li>
+            <a class="text-error font-medium" (click)="logout()">
+              <i class="pi pi-sign-out"></i> Cerrar Sesión
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+}
