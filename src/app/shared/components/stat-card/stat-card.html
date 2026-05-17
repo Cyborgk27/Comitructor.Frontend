@@ -1,0 +1,16 @@
+<div
+  class="stats shadow bg-base-100 border border-base-300 w-full hover:shadow-lg transition-shadow duration-300"
+>
+  <div class="stat">
+    @if (icon) {
+      <div class="stat-figure" [class]="colorClass">
+        <i [class]="icon + ' text-3xl'"></i>
+      </div>
+    }
+    <div class="stat-title text-base-content/60 font-medium">{{ title }}</div>
+    <div class="stat-value" [class]="colorClass">{{ value }}</div>
+    @if (description) {
+      <div class="stat-desc opacity-60">{{ description }}</div>
+    }
+  </div>
+</div>
