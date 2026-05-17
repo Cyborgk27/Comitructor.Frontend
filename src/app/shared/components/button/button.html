@@ -1,0 +1,27 @@
+<button
+  [type]="type"
+  [className]="buttonClasses"
+  [disabled]="disabled || loading"
+  (click)="handleEvent($event)"
+>
+  @if (loading) {
+    <span
+      class="loading loading-spinner"
+      [class]="{
+        'loading-xs': size === 'xs' || size === 'sm',
+        'loading-sm': size === 'md',
+        'loading-md': size === 'lg',
+      }"
+    ></span>
+  }
+
+  @if (icon && !loading) {
+    <i [class]="icon"></i>
+  }
+
+  @if (label) {
+    <span [class.ml-2]="icon || loading">
+      {{ label }}
+    </span>
+  }
+</button>

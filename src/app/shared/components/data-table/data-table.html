@@ -2,54 +2,73 @@
   <table class="table table-zebra w-full">
     <thead class="bg-base-200">
       <tr>
-        <th *ngFor="let col of columns" class="text-base-content/70 font-bold">
-          {{ col.label }}
-        </th>
-        <th *ngIf="actions.length > 0" class="text-center">Acciones</th>
+        @for (col of columns; track col.key) {
+          <th class="text-base-content/70 font-bold">{{ col.label }}</th>
+        }
+        @if (actions.length > 0) {
+          <th class="text-center">Acciones</th>
+        }
       </tr>
     </thead>
 
     <tbody>
-      <tr *ngIf="loading">
-        <td [attr.colspan]="columns.length + (actions.length > 0 ? 1 : 0)" class="text-center py-10">
-          <span class="loading loading-spinner loading-lg text-primary"></span>
-        </td>
-      </tr>
+      @if (loading) {
+        <tr>
+          <td
+            [attr.colspan]="columns.length + (actions.length > 0 ? 1 : 0)"
+            class="text-center py-10"
+          >
+            <span class="loading loading-spinner loading-lg text-primary"></span>
+          </td>
+        </tr>
+      } @else {
+        @for (item of data; track $index) {
+          <tr class="hover transition-colors">
+            @for (col of columns; track col.key) {
+              <td>
+                @switch (col.type) {
+                  @case ('date') {
+                    <span class="text-sm">{{
+                      getFieldValue(item, col.key) | date: 'shortDate'
+                    }}</span>
+                  }
+                  @case ('badge') {
+                    <span class="badge badge-outline font-bold uppercase text-xs">
+                      {{ getFieldValue(item, col.key) }}
+                    </span>
+                  }
+                  @default {
+                    <span class="font-medium">{{ getFieldValue(item, col.key) }}</span>
+                  }
+                }
+              </td>
+            }
 
-      <tr *ngFor="let item of data" class="hover transition-colors">
-        <td *ngFor="let col of columns">
-          <ng-container [ngSwitch]="col.type">
-            <span *ngSwitchCase="'date'" class="text-sm">
-              {{ getFieldValue(item, col.key) | date:'shortDate' }}
-            </span>
-            <span *ngSwitchCase="'badge'" class="badge badge-outline font-bold uppercase text-xs">
-              {{ getFieldValue(item, col.key) }}
-            </span>
-            <span *ngSwitchCase="'currency'">
-              {{ getFieldValue(item, col.key) | currency }}
-            </span>
-            <span *ngSwitchDefault class="font-medium">
-              {{ getFieldValue(item, col.key) }}
-            </span>
-          </ng-container>
-        </td>
-
-        <td *ngIf="actions.length > 0" class="flex justify-center gap-1">
-          <button *ngFor="let action of actions"
-                  (click)="action.callback(item)"
-                  class="btn btn-square btn-sm"
-                  [className]="'btn btn-square btn-sm ' + action.class"
-                  [title]="action.label">
-            <i [class]="action.icon"></i>
-          </button>
-        </td>
-      </tr>
-
-      <tr *ngIf="!loading && data.length === 0">
-        <td [attr.colspan]="columns.length + (actions.length > 0 ? 1 : 0)" class="text-center py-10 opacity-40 italic">
-          No se encontraron registros disponibles.
-        </td>
-      </tr>
+            @if (actions.length > 0) {
+              <td class="flex justify-center gap-1">
+                @for (action of actions; track action.label) {
+                  <button
+                    (click)="action.callback(item)"
+                    class="btn btn-square btn-sm {{ action.class }}"
+                    [title]="action.label"
+                  >
+                    <i [class]="action.icon"></i>
+                  </button>
+                }
+              </td>
+            }
+          </tr>
+        } @empty {
+          <tr>
+            <td
+              [attr.colspan]="columns.length + (actions.length > 0 ? 1 : 0)"
+              class="text-center py-10 opacity-40 italic"
+            >
+              No se encontraron registros disponibles.
+            </td>
+          </tr>
+        }
+      }
     </tbody>
   </table>
 </div>
