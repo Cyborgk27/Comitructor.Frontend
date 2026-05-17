@@ -1,8 +1,9 @@
 import { Component, inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from '../../../../core/api';
-import { UiService } from '../../../../core/services/ui';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+
+import { AccountService } from '../../../../core/services/account.service';
+import { UiService } from '../../../../core/services/ui';
 
 @Component({
   selector: 'app-sign-in',
@@ -12,7 +13,7 @@ import { Router } from '@angular/router';
 })
 export class SignIn {
   private fb = inject(FormBuilder);
-  private authService = inject(AuthService);
+  private accountService = inject(AccountService);
   private uiService = inject(UiService);
   private router = inject(Router);
 
@@ -29,20 +30,24 @@ export class SignIn {
 
     this.uiService.loading('Validando credenciales...');
 
-    this.authService.apiAuthLoginPost(this.loginForm.value).subscribe({
+    this.accountService.login(this.loginForm.value).subscribe({
       next: (res) => {
         this.uiService.close();
         if (res.success) {
           this.router.navigate(['/dashboard']);
+        } else {
+          this.uiService.error(res.message || 'Credenciales inválidas');
         }
       },
-      error: () => {
+      error: (err) => {
         this.uiService.error('Usuario o contraseña incorrectos', 'Error de Autenticación');
       }
     });
   }
 
-  // Helpers para validación visual en HTML
+  /**
+   * Helper para aplicar clases de error de DaisyUI
+   */
   isValidField(field: string): boolean | null {
     return this.loginForm.controls[field].errors && this.loginForm.controls[field].touched;
   }
