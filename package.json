@@ -8,7 +8,6 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "generate:api": "curl -k https://localhost:7193/swagger/v1/swagger.json -o swagger_temp.json && openapi-generator-cli generate -i swagger_temp.json -g typescript-angular -o src/app/core/api --additional-properties=providedInRoot=true,useSingleRequestParameter=false && del swagger_temp.json"
-
   },
   "private": true,
   "packageManager": "npm@11.11.0",
@@ -19,6 +18,7 @@
     "@angular/forms": "^21.2.0",
     "@angular/platform-browser": "^21.2.0",
     "@angular/router": "^21.2.0",
+    "jwt-decode": "^4.0.0",
     "rxjs": "~7.8.0",
     "sweetalert2": "^11.26.24",
     "tslib": "^2.3.0"
