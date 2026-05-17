@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import Swal from 'sweetalert2';
+import Swal, { SweetAlertOptions } from 'sweetalert2';
 import { ApiResponse } from '../interfaces/api-response.interface';
 
 /**
  * Servicio global para la gestión de la interfaz de usuario y notificaciones.
- * Centraliza el uso de SweetAlert2 para mantener la consistencia visual en toda la aplicación.
+ * Adaptado para el tema oscuro de DaisyUI y consistencia visual de Comitructor.
  */
 @Injectable({
   providedIn: 'root'
@@ -12,12 +12,23 @@ import { ApiResponse } from '../interfaces/api-response.interface';
 export class UiService {
 
   /**
+   * Configuración base para mantener el estilo oscuro y la fuente en todas las alertas.
+   */
+  private readonly darkConfig: SweetAlertOptions = {
+    background: '#1d232a', // Fondo base-200 de DaisyUI Dark
+    color: '#a6adbb',      // Texto base-content de DaisyUI Dark
+    customClass: {
+      popup: 'font-sans border border-base-300 shadow-xl rounded-2xl',
+      title: 'font-sans text-xl font-bold',
+      htmlContainer: 'font-sans',
+      confirmButton: 'btn btn-primary px-6',
+      cancelButton: 'btn btn-ghost'
+    },
+    buttonsStyling: false
+  };
+
+  /**
    * Analiza una respuesta estandarizada del API y dispara la notificación correspondiente.
-   * Utiliza el campo `success` para decidir si mostrar un mensaje de éxito o de error.
-   * * @template T Tipo de dato contenido en la respuesta del API.
-   * @param response Objeto de respuesta que sigue la estructura {@link ApiResponse}.
-   * @example
-   * this.uiService.handleResponse(res);
    */
   handleResponse<T>(response: ApiResponse<T>): void {
     if (response.success) {
@@ -28,46 +39,48 @@ export class UiService {
   }
 
   /**
-   * Muestra una alerta de éxito que se cierra automáticamente.
-   * * @param message Cuerpo del mensaje explicativo.
-   * @param title Título principal de la alerta. Por defecto: '¡Logrado!'.
+   * Muestra una alerta de éxito con el color primario del tema.
    */
   success(message: string, title: string = '¡Logrado!'): void {
     Swal.fire({
+      ...this.darkConfig,
       title: title,
       text: message,
       icon: 'success',
-      confirmButtonColor: '#3085d6',
+      iconColor: '#641ae6',
       timer: 3000,
       timerProgressBar: true
     });
   }
 
   /**
-   * Muestra una alerta de error persistente (requiere interacción del usuario).
-   * * @param message Descripción del error ocurrido.
-   * @param title Título de la alerta. Por defecto: 'Error'.
+   * Muestra una alerta de error con el color de peligro del tema.
    */
   error(message: string, title: string = 'Error'): void {
     Swal.fire({
+      ...this.darkConfig,
       title: title,
       text: message,
       icon: 'error',
-      confirmButtonColor: '#d33'
+      iconColor: '#ff5861'
     });
   }
 
   /**
-   * Bloquea la pantalla con una alerta de carga (Spinner).
-   * Útil para procesos asíncronos largos donde se debe evitar la interacción del usuario.
-   * * @param message Mensaje que acompaña al spinner. Por defecto: 'Procesando...'.
+   * Bloquea la pantalla con una alerta de carga (Spinner) adaptada al tema oscuro.
    */
   loading(message: string = 'Procesando...'): void {
     Swal.fire({
+      ...this.darkConfig,
       title: message,
       allowOutsideClick: false,
+      showConfirmButton: false,
       didOpen: () => {
         Swal.showLoading();
+        const loader = Swal.getPopup()?.querySelector('.swal2-loader') as HTMLElement;
+        if (loader) {
+          loader.style.borderLeftColor = '#641ae6';
+        }
       }
     });
   }
@@ -80,24 +93,19 @@ export class UiService {
   }
 
   /**
-   * Muestra un cuadro de diálogo de confirmación con botones 'Aceptar' y 'Cancelar'.
-   * * @param title Pregunta o título de la confirmación.
-   * @param text Información adicional sobre las consecuencias de la acción.
-   * @returns Promesa que resuelve a `true` si el usuario confirma, o `false` si cancela.
-   * * @example
-   * const confirmed = await this.uiService.confirm('¿Eliminar?', 'Esta acción no se puede deshacer');
-   * if (confirmed) { // Proceder con la eliminación }
+   * Cuadro de diálogo de confirmación con botones de DaisyUI.
    */
   async confirm(title: string, text: string): Promise<boolean> {
     const result = await Swal.fire({
+      ...this.darkConfig,
       title: title,
       text: text,
       icon: 'warning',
+      iconColor: '#fbbd23',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
       confirmButtonText: 'Sí, confirmar',
-      cancelButtonText: 'Cancelar'
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true
     });
     return result.isConfirmed;
   }
