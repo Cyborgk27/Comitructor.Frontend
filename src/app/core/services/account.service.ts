@@ -40,7 +40,7 @@ export class AccountService {
     localStorage.removeItem(AUTH_KEYS.ROLE);
     localStorage.removeItem(AUTH_KEYS.USER_DATA);
     this.authStatusSubject.next(false);
-    this.router.navigate(['/login']);
+    this.router.navigate(['/auth']);
   }
 
   private persistSession(data: LoginResponse): void {

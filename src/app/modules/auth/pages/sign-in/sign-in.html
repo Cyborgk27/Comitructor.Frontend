@@ -1,0 +1,58 @@
+<div class="min-h-[80vh] flex items-center justify-center p-4">
+  <div class="card w-full max-w-md bg-base-100 shadow-2xl border border-base-300">
+    <div class="card-body">
+      <div class="flex flex-col items-center mb-6">
+        <div class="bg-primary text-primary-content p-4 rounded-2xl mb-4 shadow-lg">
+          <i class="pi pi-lock text-3xl"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-base-content">Bienvenido</h2>
+        <p class="text-sm opacity-60 text-center">Inicie sesión para acceder al sistema Comitructor</p>
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-4">
+
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text font-semibold">Usuario</span>
+          </label>
+          <div class="join w-full">
+            <span class="join-item btn btn-ghost border border-base-300 pointer-events-none">
+              <i class="pi pi-user"></i>
+            </span>
+            <input type="text"
+                   formControlName="username"
+                   placeholder="ej. Stalin"
+                   class="input input-bordered w-full join-item"
+                   [ngClass]="{'input-error': isValidField('username')}" />
+          </div>
+        </div>
+
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text font-semibold">Contraseña</span>
+          </label>
+          <div class="join w-full">
+            <span class="join-item btn btn-ghost border border-base-300 pointer-events-none">
+              <i class="pi pi-key"></i>
+            </span>
+            <input type="password"
+                   formControlName="password"
+                   placeholder="••••••••"
+                   class="input input-bordered w-full join-item"
+                   [ngClass]="{'input-error': isValidField('password')}" />
+          </div>
+        </div>
+
+        <div class="form-control mt-6">
+          <button type="submit" class="btn btn-primary btn-block shadow-lg" [disabled]="loginForm.invalid">
+            Entrar al Sistema
+          </button>
+        </div>
+      </form>
+
+      <div class="mt-4 text-center">
+        <p class="text-xs opacity-50 italic">Proyecto Comitructor © 2026</p>
+      </div>
+    </div>
+  </div>
+</div>

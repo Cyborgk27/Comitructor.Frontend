@@ -18,6 +18,6 @@ export class AuthGuard implements CanActivate {
     }
 
     this.uiService.error('Debe iniciar sesión para acceder a este recurso.', 'Acceso Denegado');
-    return this.router.createUrlTree(['/login']);
+    return this.router.createUrlTree(['/auth']);
   }
 }
