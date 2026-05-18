@@ -1,59 +1,48 @@
-# ComitructorFrontend
+# Comitructor Frontend 🚀
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.7.
+Sistema de gestión empresarial para **Comitructor**, desarrollado con **Angular 21** bajo una arquitectura moderna, modular y escalable. Esta aplicación está diseñada para ofrecer una experiencia eficiente en la gestión de inventario, facturación y requerimientos empresariales.
 
-## Development server
+---
 
-To start a local development server, run:
+## 📋 Descripción del Proyecto
 
-```bash
-ng serve
-```
+Este frontend funciona como una **Single Page Application (SPA)** construida con Angular 18, utilizando una arquitectura basada en **Signals** y componentes standalone para mejorar el rendimiento, la mantenibilidad y la escalabilidad del sistema.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+La aplicación se comunica con un backend desarrollado en .NET mediante un cliente HTTP generado automáticamente utilizando **OpenAPI Generator**, permitiendo mantener sincronizados los contratos de la API y reducir errores manuales.
 
-## Code scaffolding
+---
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## 🛠️ Tecnologías Principales
 
-```bash
-ng generate component component-name
-```
+- **Framework:** Angular 18 (Standalone Components & Signals)
+- **Lenguaje:** TypeScript
+- **Estilos:** Tailwind CSS + DaisyUI
+- **Iconografía:** PrimeIcons
+- **Generación de API:** OpenAPI Generator (TypeScript Angular Client)
+- **Servidor Web:** Nginx sobre Alpine Linux
+- **Contenedorización:** Docker Multi-stage Build
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+---
 
-```bash
-ng generate --help
-```
+# 🐳 Despliegue con Docker
 
-## Building
+El proyecto utiliza un **Dockerfile Multi-stage** para optimizar el tamaño final de la imagen y automatizar todo el proceso de construcción y despliegue.
 
-To build the project run:
+## ✅ Requisitos Previos
 
-```bash
-ng build
-```
+Antes de comenzar, asegúrate de cumplir con los siguientes requisitos:
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+1. Tener instalado:
+   - Docker
+   - Docker Desktop (opcional pero recomendado)
 
-## Running unit tests
+2. El backend debe estar ejecutándose para que OpenAPI Generator pueda descargar correctamente el archivo `swagger.json`.
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+---
 
-```bash
-ng test
-```
+## 🚧 Construcción de la Imagen Docker
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+Desde la raíz del proyecto, ejecuta el siguiente comando:
 
 ```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+docker build -t comitructor-frontend .
