@@ -64,6 +64,21 @@
       ></textarea>
     </app-form-field>
 
+    <app-form-field label="Asignar a Responsable">
+      <select
+        formControlName="assignedUserId"
+        class="select select-bordered w-full bg-base-200 focus:select-primary"
+        [class.select-error]="isFieldInvalid('assignedUserId')"
+      >
+        <option [ngValue]="null">Sin asignar</option>
+        @for (user of users(); track user.id) {
+          <option [value]="user.id">
+            {{ user.userName }}
+          </option>
+        }
+      </select>
+    </app-form-field>
+
     <app-form-field label="Fecha de Vencimiento">
       <input
         type="date"

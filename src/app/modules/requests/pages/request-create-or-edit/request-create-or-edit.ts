@@ -1,6 +1,6 @@
-import { Component, Input, Output, EventEmitter, inject, signal, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, signal, OnChanges, SimpleChanges, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { RequestDto, RequestsService } from '../../../../core/api';
+import { RequestDto, RequestsService, UserResponseDto } from '../../../../core/api';
 import { IPrioriy } from '../interfaces/priority.interface';
 import { IArea } from '../interfaces/area.interface';
 import { UiService } from '../../../../core/services/ui';
@@ -11,7 +11,8 @@ import { UiService } from '../../../../core/services/ui';
   templateUrl: './request-create-or-edit.html',
   styleUrl: './request-create-or-edit.css',
 })
-export class RequestCreateOrEdit implements OnChanges {
+export class RequestCreateOrEdit implements OnChanges, OnInit {
+
   private requestService = inject(RequestsService);
   private fb = inject(FormBuilder);
   private ui = inject(UiService)
@@ -21,13 +22,16 @@ export class RequestCreateOrEdit implements OnChanges {
 
   public isLoading = signal(false);
 
+  public users = signal<UserResponseDto[]>([]);
+
   public requestForm: FormGroup = this.fb.group({
     id: [null],
     title: ['', [Validators.required, Validators.minLength(5)]],
     description: ['', [Validators.required, Validators.maxLength(500)]],
     priority: ['Low', [Validators.required]],
     area: ['Systems', [Validators.required]],
-    dueDate: [null]
+    dueDate: [null],
+    assignedUserId: [0]
   });
 
   // Listas para los combos
@@ -57,6 +61,20 @@ export class RequestCreateOrEdit implements OnChanges {
     } else if (changes['requestData'] && !this.requestData) {
       this.requestForm.reset({ priority: 'Low', area: 'Systems' });
     }
+  }
+  ngOnInit(): void {
+    this.loadUsers();
+  }
+
+  private loadUsers(): void {
+    this.requestService.apiRequestsUsersLookupGet().subscribe({
+      next: (res: any) => {
+        if(res) {
+          this.users.set(res.data)
+        }
+      },
+      error: (err) => console.error('Error cargando usuarios', err)
+    });
   }
 
   private loadRequestDetail(id: number): void {
@@ -97,6 +115,8 @@ export class RequestCreateOrEdit implements OnChanges {
     this.isLoading.set(true);
     const formData = this.requestForm.value;
 
+    formData.assignedUserId = parseInt(formData.assignedUserId)
+
     if (formData.id) {
       this.requestService.apiRequestsPut(formData).subscribe({
         next: (response) => {
@@ -114,10 +134,11 @@ export class RequestCreateOrEdit implements OnChanges {
         next: (response) => {
           console.log('Solicitud guardada con éxito, ID generado:', response.data);
           this.ui.success('Solicitud generada')
-          this.onClose.emit(true); // Cerramos el modal y refrescamos la lista
+          this.onClose.emit(true);
         },
-        error: (error) => {
-          console.error('Error al guardar', error);
+        error: (res) => {
+          console.error('Error al guardar', res.error.message);
+          this.ui.error(res.error.message)
           this.isLoading.set(false);
         },
         complete: () => {
