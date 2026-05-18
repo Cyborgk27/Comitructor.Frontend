@@ -11,6 +11,7 @@ export class Modal {
   @Input() title = '';
   @Input() saveLabel = 'Guardar';
   @Input() showSave = true;
+  @Input() maxWidth: string = 'max-w-md';
 
   @Output() onClose = new EventEmitter<void>();
   @Output() onSave = new EventEmitter<void>();

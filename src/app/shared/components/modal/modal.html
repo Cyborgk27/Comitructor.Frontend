@@ -1,6 +1,6 @@
 @if (isOpen) {
   <div class="modal modal-open modal-bottom sm:modal-middle transition-all duration-300">
-    <div class="modal-box bg-base-100 border border-base-300 shadow-2xl">
+    <div class="modal-box bg-base-100 border border-base-300 shadow-2xl w-11/12 {{ maxWidth }}">
       <div class="flex justify-between items-center mb-4">
         <h3 class="font-bold text-xl">{{ title }}</h3>
         <button (click)="onClose.emit()" class="btn btn-sm btn-circle btn-ghost">✕</button>

@@ -1,17 +1,16 @@
 <div class="form-control w-full">
   @if (label) {
     <label class="label">
-      <span class="label-text font-semibold text-base-content/80">{{ label }}</span>
+      <span class="label-text font-bold opacity-70">{{ label }}</span>
     </label>
   }
 
   <ng-content></ng-content>
 
-  @if (error) {
-    <label class="label h-6">
-      <span class="label-text-alt text-error animate-in fade-in slide-in-from-top-1">
-        <i class="pi pi-exclamation-circle mr-1"></i>
-        {{ error === true ? 'Campo requerido' : error }}
+  @if (hasError) {
+    <label class="label animate-in slide-in-from-top-1 duration-200">
+      <span class="label-text-alt text-error font-medium">
+        {{ errorMsg || 'Este campo es requerido o contiene errores' }}
       </span>
     </label>
   }

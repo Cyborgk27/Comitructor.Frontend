@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { AbstractControl } from '@angular/forms';
 
 @Component({
   selector: 'app-form-field',
@@ -8,5 +9,10 @@ import { Component, Input } from '@angular/core';
 })
 export class FormField {
   @Input() label: string = '';
-  @Input() error: string | boolean | null = null;
+  @Input() control: AbstractControl | null = null;
+  @Input() errorMsg: string = '';
+
+  get hasError(): boolean {
+    return !!(this.control && this.control.errors && (this.control.dirty || this.control.touched));
+  }
 }

@@ -16,7 +16,12 @@
     </app-button>
   </div>
 
-  <app-data-table [data]="requests()" [columns]="columns" [actions]="actions" [loading]="isLoading()">
+  <app-data-table
+    [data]="requests()"
+    [columns]="columns"
+    [actions]="actions"
+    [loading]="isLoading()"
+  >
   </app-data-table>
 </div>
 
@@ -30,7 +35,26 @@
     <app-request-create-or-edit
       #requestForm
       [requestData]="requestToEdit() === 'new' ? null : $any(requestToEdit())"
-      (onClose)="closeModal($event)">
+      (onClose)="closeModal($event)"
+    >
     </app-request-create-or-edit>
+  }
+</app-modal>
+
+<app-modal
+  [isOpen]="isStatusModalOpen()"
+  [title]="'Actualizar Estado: ' + requestToChangeStatus()?.code"
+  (onClose)="closeStatusModal()"
+  (onSave)="statusComponent?.submitStatus()"
+  [maxWidth]="'max-w-4xl'"
+>
+  @if (isStatusModalOpen()) {
+    <app-request-change-status
+      #statusComponent
+      [requestId]="requestToChangeStatus()!.id ?? 0"
+      [currentStatus]="requestToChangeStatus()!.status ?? ''"
+      (onClose)="closeStatusModal($event)"
+    >
+    </app-request-change-status>
   }
 </app-modal>

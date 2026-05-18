@@ -4,6 +4,7 @@ import { UiService } from '../../../../core/services/ui';
 import { TableColumn } from '../../../../shared/interfaces/table-column.interface';
 import { TableAction } from '../../../../shared/interfaces/table-action.interface';
 import { RequestCreateOrEdit } from '../request-create-or-edit/request-create-or-edit';
+import { RequestChangeStatus } from './../request-change-status/request-change-status';
 
 @Component({
   selector: 'app-request-list',
@@ -13,6 +14,7 @@ import { RequestCreateOrEdit } from '../request-create-or-edit/request-create-or
 })
 export class RequestList implements OnInit {
   @ViewChild('requestForm') requestForm?: RequestCreateOrEdit;
+  @ViewChild('statusComponent') statusComponent?: RequestChangeStatus;
 
   private requestsService = inject(RequestsService);
   private cdr = inject(ChangeDetectorRef)
@@ -21,6 +23,10 @@ export class RequestList implements OnInit {
   // Estado del Modal y Edición
   public requestToEdit = signal<RequestDto | null | 'new'>(null);
   public isModalOpen = computed(() => this.requestToEdit() !== null);
+
+  // NUEVO: Modal de Cambio de Estado
+  public requestToChangeStatus = signal<RequestDto | null>(null);
+  public isStatusModalOpen = computed(() => this.requestToChangeStatus() !== null);
 
   // Estado de los datos
   public requests = signal<RequestDto[]>([]);
@@ -42,10 +48,10 @@ export class RequestList implements OnInit {
       callback: (item) => this.openModal(item)
     },
     {
-      label: 'Eliminar',
-      icon: 'pi pi-trash',
-      class: 'btn-ghost text-error',
-      callback: (item) => this.deleteRequest(item)
+      label: 'Estado', // REEMPLAZADO: Eliminar por Estado
+      icon: 'pi pi-sync',
+      class: 'btn-ghost text-success',
+      callback: (item) => this.openStatusModal(item)
     }
   ];
 
@@ -96,5 +102,14 @@ export class RequestList implements OnInit {
     if (this.requestForm) {
       this.requestForm.onSubmit();
     }
+  }
+
+  openStatusModal(request: RequestDto) {
+    this.requestToChangeStatus.set(request);
+  }
+
+  closeStatusModal(refresh: boolean = false) {
+    this.requestToChangeStatus.set(null);
+    if (refresh) this.loadRequests();
   }
 }

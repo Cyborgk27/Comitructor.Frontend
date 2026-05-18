@@ -1,76 +1,72 @@
-<div class="p-6 max-w-2xl">
-  <h2 class="text-2xl font-bold mb-6 text-white">Nueva Solicitud</h2>
+<div class="p-6 max-w-2xl animate-in fade-in duration-500">
+  <h2 class="text-2xl font-bold mb-6 text-white">
+    {{ requestForm.get('id')?.value ? 'Editar Solicitud' : 'Nueva Solicitud' }}
+  </h2>
 
-  <form [formGroup]="requestForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+  <form [formGroup]="requestForm" class="space-y-4">
+
     <app-form-field
       label="Título de la Solicitud"
-      [error]="
-        requestForm.get('title')?.touched && requestForm.get('title')?.invalid
-          ? 'El título es requerido (mínimo 5 caracteres)'
-          : null
-      "
+      [control]="$any(requestForm.get('title'))"
+      errorMsg="El título es obligatorio (mín. 5 caracteres)"
     >
       <input
         type="text"
         formControlName="title"
-        placeholder="Ej. Error en pasarela de pagos"
         class="input input-bordered w-full bg-base-200 focus:input-primary"
-        [class.input-error]="requestForm.get('title')?.touched && requestForm.get('title')?.invalid"
+        [class.input-error]="isFieldInvalid('title')"
       />
     </app-form-field>
 
-    <app-form-field label="Prioridad">
-      <select
-        formControlName="priority"
-        class="select select-bordered w-full bg-base-200 focus:select-primary"
-      >
-        @for (priority of priorities; track $index) {
-          <option [value]="priority.value">
-            {{ priority.label }}
-          </option>
-        }
-      </select>
-    </app-form-field>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <app-form-field label="Prioridad" [control]="$any(requestForm.get('priority'))">
+        <select
+          formControlName="priority"
+          class="select select-bordered w-full bg-base-200 focus:select-primary"
+        >
+          @for (priority of priorities; track priority.value) {
+            <option [value]="priority.value">
+              {{ priority.label }}
+            </option>
+          }
+        </select>
+      </app-form-field>
 
-    <app-form-field label="Área">
-      <select
-        formControlName="area"
-        class="select select-bordered w-full bg-base-200 focus:select-primary"
-      >
-        @for (area of areas; track $index) {
-          <option [value]="area.value">
-            {{ area.label }}
-          </option>
-        }
-      </select>
-    </app-form-field>
+      <app-form-field label="Área" [control]="$any(requestForm.get('area'))">
+        <select
+          formControlName="area"
+          class="select select-bordered w-full bg-base-200 focus:select-primary"
+        >
+          @for (area of areas; track area.value) {
+            <option [value]="area.value">
+              {{ area.label }}
+            </option>
+          }
+        </select>
+      </app-form-field>
+    </div>
 
     <app-form-field
       label="Descripción detallada"
-      [error]="
-        requestForm.get('description')?.touched && requestForm.get('description')?.invalid
-          ? 'La descripción es obligatoria'
-          : null
-      "
+      [control]="$any(requestForm.get('description'))"
+      errorMsg="La descripción es obligatoria (máx. 500 caracteres)"
     >
       <textarea
         formControlName="description"
         rows="4"
         placeholder="Escribe los detalles aquí..."
         class="textarea textarea-bordered w-full bg-base-200 focus:textarea-primary"
-        [class.textarea-error]="
-          requestForm.get('description')?.touched && requestForm.get('description')?.invalid
-        "
+        [class.textarea-error]="isFieldInvalid('description')"
       ></textarea>
     </app-form-field>
 
-    <app-form-field label="Asignar a Responsable">
+    <app-form-field label="Asignar a Responsable" [control]="$any(requestForm.get('assignedUserId'))">
       <select
         formControlName="assignedUserId"
         class="select select-bordered w-full bg-base-200 focus:select-primary"
         [class.select-error]="isFieldInvalid('assignedUserId')"
       >
-        <option [ngValue]="null">Sin asignar</option>
+        <option [value]="0">Sin asignar</option>
         @for (user of users(); track user.id) {
           <option [value]="user.id">
             {{ user.userName }}
@@ -79,12 +75,13 @@
       </select>
     </app-form-field>
 
-    <app-form-field label="Fecha de Vencimiento">
+    <app-form-field label="Fecha de Vencimiento" [control]="$any(requestForm.get('dueDate'))">
       <input
         type="date"
         formControlName="dueDate"
         class="input input-bordered w-full bg-base-200 focus:input-primary"
       />
     </app-form-field>
+
   </form>
 </div>

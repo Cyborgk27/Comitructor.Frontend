@@ -6,9 +6,10 @@ import { RequestCreateOrEdit } from './pages/request-create-or-edit/request-crea
 import { RequestList } from './pages/request-list/request-list';
 import { SharedModule } from '../../shared/shared-module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RequestChangeStatus } from './pages/request-change-status/request-change-status';
 
 @NgModule({
-  declarations: [RequestCreateOrEdit, RequestList],
-  imports: [CommonModule, RequestsRoutingModule, SharedModule,ReactiveFormsModule, FormsModule],
+  declarations: [RequestCreateOrEdit, RequestList, RequestChangeStatus],
+  imports: [CommonModule, RequestsRoutingModule, SharedModule, ReactiveFormsModule, FormsModule],
 })
 export class RequestsModule {}

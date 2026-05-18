@@ -1,0 +1,75 @@
+<div class="flex flex-col gap-6 animate-in fade-in duration-300">
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+    <div class="flex flex-col gap-4">
+      <h4 class="text-xs font-bold uppercase opacity-50 tracking-widest mb-2">Configuración de Estado</h4>
+
+      <form [formGroup]="statusForm" (ngSubmit)="submitStatus()" class="space-y-4">
+
+        <app-form-field label="Estado Destino" [control]="$any(statusForm.get('newStatus'))">
+          <select formControlName="newStatus" class="select select-bordered w-full bg-base-200">
+            @for (opt of statusOptions; track opt.value) {
+              <option [value]="opt.value">{{ opt.label }}</option>
+            }
+          </select>
+        </app-form-field>
+
+        <app-form-field label="Comentario del Cambio" [control]="$any(statusForm.get('comment'))">
+          <textarea
+            formControlName="comment"
+            class="textarea textarea-bordered h-32 resize-none w-full"
+            placeholder="Describa el motivo del cambio (mín. 10 caracteres)...">
+          </textarea>
+        </app-form-field>
+
+        <!-- <div class="pt-2">
+          <button
+            type="submit"
+            [disabled]="statusForm.invalid"
+            class="btn btn-primary w-full shadow-lg group"
+          >
+            <i class="pi pi-save group-hover:scale-110 transition-transform"></i>
+            Actualizar Estado
+          </button>
+        </div> -->
+      </form>
+    </div>
+
+    <div class="flex flex-col">
+      <h4 class="text-xs font-bold uppercase opacity-50 tracking-widest mb-6">Historial de Actividad</h4>
+
+      <div class="bg-base-200/50 rounded-2xl p-6 flex-grow overflow-y-auto max-h-[420px] border border-base-300">
+        @if (history().length > 0) {
+          <ul class="timeline timeline-vertical timeline-compact">
+            @for (log of history(); track $index) {
+              <li>
+                <hr class="bg-primary/20" />
+                <div class="timeline-middle">
+                  <i class="pi pi-circle-fill text-primary text-[10px]"></i>
+                </div>
+                <div class="timeline-end mb-6 ml-2">
+                  <time class="text-[10px] opacity-50 font-mono">{{ log.createdDate | date:'short' }}</time>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="text-xs font-bold">{{ log.userName }}</span>
+                    <span class="badge badge-sm badge-outline text-[10px] h-4">{{ log.newStatus }}</span>
+                  </div>
+                  <p class="text-sm mt-2 p-3 bg-base-100 rounded-lg border border-base-300 italic opacity-80">
+                    "{{ log.changeReason }}"
+                  </p>
+                </div>
+                <hr class="bg-primary/20" />
+              </li>
+            }
+          </ul>
+        } @else {
+          <div class="flex flex-col items-center justify-center h-full opacity-30 py-10">
+            <i class="pi pi-history text-5xl mb-3"></i>
+            <p class="text-sm font-medium">Sin movimientos registrados</p>
+          </div>
+        }
+      </div>
+    </div>
+
+  </div>
+</div>
