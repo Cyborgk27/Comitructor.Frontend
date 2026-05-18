@@ -16,13 +16,17 @@ export class Sidebar {
 
   // Definición de las opciones del menú
   menuItems: MenuItem[] = [
-    { label: 'Panel Principal', icon: 'pi pi-chart-bar', route: '/dashboard' },
-    { label: 'Mis Solicitudes', icon: 'pi pi-ticket', route: '/requests' },
     {
-      label: 'Configuración Sistema',
-      icon: 'pi pi-sliders-h',
-      route: '/settings',
+      label: 'Panel Principal',
+      icon: 'pi pi-chart-bar',
+      route: '/dashboard',
       roles: ['Administrator']
+    },
+    {
+      label: 'Mis Solicitudes',
+      icon: 'pi pi-ticket',
+      route: '/requests',
+      roles: ['Administrator', 'Operator']
     },
   ];
 

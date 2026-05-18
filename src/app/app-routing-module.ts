@@ -12,13 +12,15 @@ const routes: Routes = [
   },
   {
     path: 'dashboard',
-    canActivate: [AuthGuard],
-    loadChildren: () => import('./modules/dashboard/dashboard-module').then(m => m.DashboardModule)
+    canActivate: [AuthGuard, roleGuard],
+    loadChildren: () => import('./modules/dashboard/dashboard-module').then(m => m.DashboardModule),
+    data: { expectedRoles: ['Administrator'] }
   },
   {
     path: 'requests',
-    canActivate: [AuthGuard],
-    loadChildren: () => import('./modules/requests/requests-module').then(m => m.RequestsModule)
+    canActivate: [AuthGuard, roleGuard],
+    loadChildren: () => import('./modules/requests/requests-module').then(m => m.RequestsModule),
+    data: { expectedRoles: ['Administrator', 'Operator'] }
   },
   {
     path: '',
