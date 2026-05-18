@@ -1,1 +1,56 @@
-<p>dashboard works!</p>
+<div class="p-6 space-y-6 animate-in fade-in duration-500">
+  <div class="flex flex-col gap-1">
+    <h1 class="text-3xl font-extrabold text-white tracking-tight">Panel de Control</h1>
+    <p class="text-base-content/60">Resumen operativo de solicitudes de mantenimiento</p>
+  </div>
+
+  <!-- Tarjetas de Estadísticas Usando el Componente Reutilizable -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+
+    <!-- Total -->
+    <app-stat-card
+      [title]="'Total'"
+      [value]="summary()?.totalRequests || 0"
+      [icon]="'pi pi-list'"
+      [colorClass]="'text-primary'"
+      [description]="'Acumulado histórico'">
+    </app-stat-card>
+
+    <!-- Abiertas -->
+    <app-stat-card
+      [title]="'Abiertas'"
+      [value]="summary()?.openRequests || 0"
+      [icon]="'pi pi-folder-open'"
+      [colorClass]="'text-info'"
+      [description]="'Requieren atención'">
+    </app-stat-card>
+
+    <!-- Críticas -->
+    <app-stat-card
+      [title]="'Críticas'"
+      [value]="summary()?.criticalRequests || 0"
+      [icon]="'pi pi-bolt animate-pulse'"
+      [colorClass]="'text-error'"
+      [description]="'Prioridad máxima'">
+    </app-stat-card>
+
+    <!-- Vencidas -->
+    <app-stat-card
+      [title]="'Vencidas'"
+      [value]="summary()?.overdueRequests || 0"
+      [icon]="'pi pi-calendar-times'"
+      [colorClass]="'text-orange-500'"
+      [description]="'Fuera de tiempo'">
+    </app-stat-card>
+
+    <!-- Cerradas -->
+    <app-stat-card
+      [title]="'Cerradas'"
+      [value]="summary()?.closedRequests || 0"
+      [icon]="'pi pi-check-circle'"
+      [colorClass]="'text-success'"
+      [description]="'Finalizadas'">
+    </app-stat-card>
+
+  </div>
+</div>
