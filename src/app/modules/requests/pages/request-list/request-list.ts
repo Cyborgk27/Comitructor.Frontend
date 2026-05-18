@@ -5,6 +5,8 @@ import { TableColumn } from '../../../../shared/interfaces/table-column.interfac
 import { TableAction } from '../../../../shared/interfaces/table-action.interface';
 import { RequestCreateOrEdit } from '../request-create-or-edit/request-create-or-edit';
 import { RequestChangeStatus } from './../request-change-status/request-change-status';
+import { FormControl } from '@angular/forms';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 @Component({
   selector: 'app-request-list',
@@ -17,26 +19,36 @@ export class RequestList implements OnInit {
   @ViewChild('statusComponent') statusComponent?: RequestChangeStatus;
 
   private requestsService = inject(RequestsService);
-  private cdr = inject(ChangeDetectorRef)
+  private cdr = inject(ChangeDetectorRef);
   uiService = inject(UiService);
 
-  // Estado del Modal y Edición
-  public requestToEdit = signal<RequestDto | null | 'new'>(null);
-  public isModalOpen = computed(() => this.requestToEdit() !== null);
-
-  // NUEVO: Modal de Cambio de Estado
-  public requestToChangeStatus = signal<RequestDto | null>(null);
-  public isStatusModalOpen = computed(() => this.requestToChangeStatus() !== null);
-
-  // Estado de los datos
+  // --- Signals de Estado de UI ---
   public requests = signal<RequestDto[]>([]);
   public isLoading = signal(false);
+  public totalItems = signal(0);
+
+  // --- Signals de Filtros y Paginación ---
+  public currentPage = signal(1);
+  public pageSize = signal(10);
+  public searchTerm = signal('');
+  public statusFilter = signal<string | undefined>(undefined);
+  public priorityFilter = signal<string | undefined>(undefined);
+
+  // Control para el buscador con debounce
+  public searchControl = new FormControl('');
+
+  // Modales
+  public requestToEdit = signal<RequestDto | null | 'new'>(null);
+  public isModalOpen = computed(() => this.requestToEdit() !== null);
+  public requestToChangeStatus = signal<RequestDto | null>(null);
+  public isStatusModalOpen = computed(() => this.requestToChangeStatus() !== null);
 
   public columns: TableColumn[] = [
     { label: 'Id', key: 'id' },
     { label: 'Folio', key: 'code' },
     { label: 'Descripción', key: 'description' },
     { label: 'Estado', key: 'status', type: 'badge' },
+    { label: 'Prioridad', key: 'priority', type: 'badge' }, // Añadida prioridad
     { label: 'Fecha Reg.', key: 'createdDate', type: 'date' }
   ];
 
@@ -48,7 +60,7 @@ export class RequestList implements OnInit {
       callback: (item) => this.openModal(item)
     },
     {
-      label: 'Estado', // REEMPLAZADO: Eliminar por Estado
+      label: 'Estado',
       icon: 'pi pi-sync',
       class: 'btn-ghost text-success',
       callback: (item) => this.openStatusModal(item)
@@ -56,23 +68,63 @@ export class RequestList implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.setupSearch();
     this.loadRequests();
+  }
+
+  private setupSearch() {
+    this.searchControl.valueChanges
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(val => {
+        this.searchTerm.set(val || '');
+        this.currentPage.set(1); // Reset a pag 1 al buscar
+        this.loadRequests();
+      });
   }
 
   loadRequests() {
     this.isLoading.set(true);
-    this.requestsService.apiRequestsGet().subscribe({
-      next: (res) => {
-        this.requests.set(res.data || []);
+
+    // Llamada al servicio con los nuevos parámetros del DTO de filtrado
+    this.requestsService.apiRequestsGet(
+      this.searchTerm(),
+      this.statusFilter(),
+      this.priorityFilter(),
+      this.currentPage(),
+      this.pageSize()
+    ).subscribe({
+      next: (res: any) => {
+        this.requests.set(res.data?.items || []);
+        this.totalItems.set(res.data?.totalCount || 0);
         this.isLoading.set(false);
         this.cdr.markForCheck();
       },
       error: () => {
         this.isLoading.set(false);
-        this.uiService.error('No se pudieron obtener las peticiones');
-        this.cdr.detectChanges()
+        this.uiService.error('Error al cargar peticiones');
       }
     });
+  }
+
+  // --- Handlers de Filtros ---
+  onStatusFilter(status: string) {
+    this.statusFilter.set(status || undefined);
+    this.currentPage.set(1);
+    this.loadRequests();
+  }
+
+  onPageChange(page: number) {
+    this.currentPage.set(page);
+    this.loadRequests();
+  }
+
+  // --- Gestión de Modales ---
+  handleConfirm() {
+    this.requestForm?.onSubmit();
+  }
+
+  handleStatusConfirm() {
+    this.statusComponent?.submitStatus();
   }
 
   openModal(request: RequestDto | 'new' = 'new') {
@@ -82,26 +134,6 @@ export class RequestList implements OnInit {
   closeModal(refresh: boolean = false) {
     this.requestToEdit.set(null);
     if (refresh) this.loadRequests();
-  }
-
-  deleteRequest(item: RequestDto) {
-    this.uiService.confirm('¿Seguro?', 'Esta acción no se puede deshacer').then(confirmed => {
-      if (confirmed) {
-        this.uiService.loading('Eliminando...');
-        // Aquí deberías llamar a tu servicio de delete real:
-        // this.requestsService.apiRequestsIdDelete(item.id).subscribe(...)
-        setTimeout(() => {
-          this.uiService.success('Petición eliminada');
-          this.loadRequests();
-        }, 1500);
-      }
-    });
-  }
-
-  handleConfirm() {
-    if (this.requestForm) {
-      this.requestForm.onSubmit();
-    }
   }
 
   openStatusModal(request: RequestDto) {
