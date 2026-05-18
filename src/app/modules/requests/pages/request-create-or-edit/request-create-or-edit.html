@@ -1,1 +1,75 @@
-<p>request-create-or-edit works!</p>
+<div class="p-6 max-w-2xl">
+  <h2 class="text-2xl font-bold mb-6 text-white">Nueva Solicitud</h2>
+
+  <form [formGroup]="requestForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+    <app-form-field
+      label="Título de la Solicitud"
+      [error]="
+        requestForm.get('title')?.touched && requestForm.get('title')?.invalid
+          ? 'El título es requerido (mínimo 5 caracteres)'
+          : null
+      "
+    >
+      <input
+        type="text"
+        formControlName="title"
+        placeholder="Ej. Error en pasarela de pagos"
+        class="input input-bordered w-full bg-base-200 focus:input-primary"
+        [class.input-error]="requestForm.get('title')?.touched && requestForm.get('title')?.invalid"
+      />
+    </app-form-field>
+
+    <app-form-field label="Prioridad">
+      <select
+        formControlName="priority"
+        class="select select-bordered w-full bg-base-200 focus:select-primary"
+      >
+        @for (priority of priorities; track $index) {
+          <option [value]="priority.value">
+            {{ priority.label }}
+          </option>
+        }
+      </select>
+    </app-form-field>
+
+    <app-form-field label="Área">
+      <select
+        formControlName="area"
+        class="select select-bordered w-full bg-base-200 focus:select-primary"
+      >
+        @for (area of areas; track $index) {
+          <option [value]="area.value">
+            {{ area.label }}
+          </option>
+        }
+      </select>
+    </app-form-field>
+
+    <app-form-field
+      label="Descripción detallada"
+      [error]="
+        requestForm.get('description')?.touched && requestForm.get('description')?.invalid
+          ? 'La descripción es obligatoria'
+          : null
+      "
+    >
+      <textarea
+        formControlName="description"
+        rows="4"
+        placeholder="Escribe los detalles aquí..."
+        class="textarea textarea-bordered w-full bg-base-200 focus:textarea-primary"
+        [class.textarea-error]="
+          requestForm.get('description')?.touched && requestForm.get('description')?.invalid
+        "
+      ></textarea>
+    </app-form-field>
+
+    <app-form-field label="Fecha de Vencimiento">
+      <input
+        type="date"
+        formControlName="dueDate"
+        class="input input-bordered w-full bg-base-200 focus:input-primary"
+      />
+    </app-form-field>
+  </form>
+</div>

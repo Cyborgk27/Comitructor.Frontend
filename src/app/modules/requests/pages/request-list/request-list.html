@@ -1,1 +1,36 @@
-<p>request-list works!</p>
+<div class="p-6 space-y-6 animate-in fade-in duration-500">
+  <div
+    class="flex justify-between items-end bg-base-100 p-4 rounded-xl border border-base-300 shadow-sm"
+  >
+    <div>
+      <h1 class="text-2xl font-bold">Listado de Peticiones</h1>
+      <p class="text-sm opacity-60">Gestión de requerimientos para Comitructor</p>
+    </div>
+
+    <app-button
+      label="Nueva Petición"
+      icon="pi pi-plus"
+      variant="primary"
+      (onClick)="openModal('new')"
+    >
+    </app-button>
+  </div>
+
+  <app-data-table [data]="requests()" [columns]="columns" [actions]="actions" [loading]="isLoading()">
+  </app-data-table>
+</div>
+
+<app-modal
+  [isOpen]="isModalOpen()"
+  [title]="requestToEdit() === 'new' ? 'Crear Solicitud' : 'Editar Solicitud'"
+  (onClose)="closeModal()"
+  (onSave)="handleConfirm()"
+>
+  @if (isModalOpen()) {
+    <app-request-create-or-edit
+      #requestForm
+      [requestData]="requestToEdit() === 'new' ? null : $any(requestToEdit())"
+      (onClose)="closeModal($event)">
+    </app-request-create-or-edit>
+  }
+</app-modal>

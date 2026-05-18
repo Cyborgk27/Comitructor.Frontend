@@ -5,20 +5,20 @@ import { RequestCreateOrEdit } from './pages/request-create-or-edit/request-crea
 
 const routes: Routes = [
   {
-    path: 'request-list',
+    path: 'list',
     component: RequestList
   },
   {
-    path: 'request/create',
+    path: 'create',
     component: RequestCreateOrEdit
   },
   {
-    path: 'request/edit/:id',
+    path: 'edit/:id',
     component: RequestCreateOrEdit
   },
   {
     path: '**',
-    redirectTo: 'request-list'
+    redirectTo: 'list'
   }
 ];
 
