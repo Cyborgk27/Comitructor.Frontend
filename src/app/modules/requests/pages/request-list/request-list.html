@@ -1,25 +1,41 @@
 <div class="p-6 space-y-6 animate-in fade-in duration-500">
-  <div class="flex justify-between items-end bg-base-100 p-4 rounded-xl border border-base-300 shadow-sm">
+  <div
+    class="flex justify-between items-end bg-base-100 p-4 rounded-xl border border-base-300 shadow-sm"
+  >
     <div>
       <h1 class="text-2xl font-bold">Listado de Peticiones</h1>
       <p class="text-sm opacity-60">Gestión de requerimientos para Comitructor</p>
     </div>
 
-    <app-button label="Nueva Petición" icon="pi pi-plus" variant="primary" (onClick)="openModal('new')">
+    <app-button
+      label="Nueva Petición"
+      icon="pi pi-plus"
+      variant="primary"
+      (onClick)="openModal('new')"
+    >
     </app-button>
   </div>
 
-  <div class="flex flex-wrap gap-4 items-center bg-base-100 p-4 rounded-xl border border-base-300 shadow-sm">
+  <div
+    class="flex flex-wrap gap-4 items-center bg-base-100 p-4 rounded-xl border border-base-300 shadow-sm"
+  >
     <div class="flex-1 min-w-[250px]">
       <div class="relative">
         <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 opacity-40"></i>
-        <input type="text" [formControl]="searchControl" placeholder="Buscar por folio, título o descripción..."
-          class="input input-bordered w-full pl-10 bg-base-200 focus:bg-base-100 transition-all" />
+        <input
+          type="text"
+          [formControl]="searchControl"
+          placeholder="Buscar por folio, título o descripción..."
+          class="input input-bordered w-full pl-10 bg-base-200 focus:bg-base-100 transition-all"
+        />
       </div>
     </div>
 
     <div class="flex gap-2">
-      <select (change)="onStatusFilter($any($event.target).value)" class="select select-bordered bg-base-200">
+      <select
+        (change)="onStatusFilter($any($event.target).value)"
+        class="select select-bordered bg-base-200"
+      >
         <option value="">Todos los estados</option>
         <option value="New">Nuevo</option>
         <option value="InProgress">En Progreso</option>
@@ -36,61 +52,91 @@
 
   <div class="relative">
     @if (isLoading()) {
-    <div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-base-100/50 backdrop-blur-[1px] rounded-xl">
-      <span class="loading loading-spinner loading-lg text-primary"></span>
-      <span class="text-sm font-medium mt-2 opacity-70">Cargando datos...</span>
-    </div>
+      <div
+        class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-base-100/50 backdrop-blur-[1px] rounded-xl"
+      >
+        <span class="loading loading-spinner loading-lg text-primary"></span>
+        <span class="text-sm font-medium mt-2 opacity-70">Cargando datos...</span>
+      </div>
     }
 
     <app-data-table [data]="requests()" [columns]="columns" [actions]="actions">
       @if (totalItems() > 0) {
-      <div pagination class="flex justify-between items-center w-full">
-        <span class="text-xs opacity-50 font-medium">
-          Mostrando {{ requests().length }} de {{ totalItems() }} registros
-        </span>
+        <div pagination class="flex justify-between items-center w-full">
+          <span class="text-xs opacity-50 font-medium">
+            Mostrando {{ requests().length }} de {{ totalItems() }} registros
+          </span>
 
-        <div class="join shadow-sm border border-base-300">
-          <button class="join-item btn btn-sm" [disabled]="currentPage() === 1" (click)="onPageChange(currentPage() - 1)">
-            « Anterior
-          </button>
-          <button class="join-item btn btn-sm bg-base-200 pointer-events-none">
-            Página {{ currentPage() }}
-          </button>
-          <button class="join-item btn btn-sm" [disabled]="(currentPage() * pageSize()) >= totalItems()"
-            (click)="onPageChange(currentPage() + 1)">
-            Siguiente »
-          </button>
+          <div class="join shadow-sm border border-base-300">
+            <button
+              class="join-item btn btn-sm"
+              [disabled]="currentPage() === 1"
+              (click)="onPageChange(currentPage() - 1)"
+            >
+              « Anterior
+            </button>
+            <button class="join-item btn btn-sm bg-base-200 pointer-events-none">
+              Página {{ currentPage() }}
+            </button>
+            <button
+              class="join-item btn btn-sm"
+              [disabled]="currentPage() * pageSize() >= totalItems()"
+              (click)="onPageChange(currentPage() + 1)"
+            >
+              Siguiente »
+            </button>
+          </div>
         </div>
-      </div>
       }
     </app-data-table>
 
     @if (!isLoading() && requests().length === 0) {
-    <div class="flex flex-col items-center justify-center py-12 bg-base-100 rounded-b-xl border-x border-b border-base-300">
-      <i class="pi pi-inbox text-5xl opacity-20"></i>
-      <p class="mt-4 text-lg font-medium opacity-50">No se encontraron peticiones</p>
-      <button (click)="searchControl.setValue('')" class="btn btn-link btn-sm text-primary no-underline">
-        Limpiar filtros
-      </button>
-    </div>
+      <div
+        class="flex flex-col items-center justify-center py-12 bg-base-100 rounded-b-xl border-x border-b border-base-300"
+      >
+        <i class="pi pi-inbox text-5xl opacity-20"></i>
+        <p class="mt-4 text-lg font-medium opacity-50">No se encontraron peticiones</p>
+        <button
+          (click)="searchControl.setValue('')"
+          class="btn btn-link btn-sm text-primary no-underline"
+        >
+          Limpiar filtros
+        </button>
+      </div>
     }
   </div>
 </div>
 
-<app-modal [isOpen]="isModalOpen()" [title]="requestToEdit() === 'new' ? 'Crear Solicitud' : 'Editar Solicitud'"
-  (onClose)="closeModal()" (onSave)="handleConfirm()">
+<app-modal
+  [isOpen]="isModalOpen()"
+  [title]="requestToEdit() === 'new' ? 'Crear Solicitud' : 'Editar Solicitud'"
+  (onClose)="closeModal()"
+  (onSave)="handleConfirm()"
+>
   @if (isModalOpen()) {
-  <app-request-create-or-edit #requestForm [requestData]="requestToEdit() === 'new' ? null : $any(requestToEdit())"
-    (onClose)="closeModal($event)">
-  </app-request-create-or-edit>
+    <app-request-create-or-edit
+      #requestForm
+      [requestData]="requestToEdit() === 'new' ? null : $any(requestToEdit())"
+      (onClose)="closeModal($event)"
+    >
+    </app-request-create-or-edit>
   }
 </app-modal>
 
-<app-modal [isOpen]="isStatusModalOpen()" [title]="'Actualizar Estado: ' + requestToChangeStatus()?.code"
-  (onClose)="closeStatusModal()" (onSave)="handleStatusConfirm()" [maxWidth]="'max-w-4xl'">
+<app-modal
+  [isOpen]="isStatusModalOpen()"
+  [title]="'Actualizar Estado: ' + requestToChangeStatus()?.code"
+  (onClose)="closeStatusModal()"
+  (onSave)="handleStatusConfirm()"
+  [maxWidth]="'max-w-4xl'"
+>
   @if (isStatusModalOpen()) {
-  <app-request-change-status #statusComponent [requestId]="requestToChangeStatus()!.id ?? 0"
-    [currentStatus]="requestToChangeStatus()!.status ?? ''" (onClose)="closeStatusModal($event)">
-  </app-request-change-status>
+    <app-request-change-status
+      #statusComponent
+      [requestId]="requestToChangeStatus()!.id ?? 0"
+      [currentStatus]="requestToChangeStatus()!.status ?? ''"
+      (onClose)="closeStatusModal($event)"
+    >
+    </app-request-change-status>
   }
 </app-modal>
